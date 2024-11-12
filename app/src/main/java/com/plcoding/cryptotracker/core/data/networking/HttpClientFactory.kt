@@ -16,7 +16,7 @@ import kotlinx.serialization.json.Json
 /**
  * Created by felipebertanha on 12/November/2024
  */
-object HttpFactory {
+object HttpClientFactory {
     fun create(engine: HttpClientEngine): HttpClient {
         return HttpClient(engine) {
             install(Logging) {
