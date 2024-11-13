@@ -25,7 +25,6 @@ import com.plcoding.cryptotracker.ui.theme.CryptoTrackerTheme
 fun CoinListScreen(
     state: CoinListState, modifier: Modifier = Modifier
 ) {
-
     if (state.isLoading) {
         Box(
             modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
@@ -50,8 +49,9 @@ fun CoinListScreen(
 @Composable
 private fun CoinListScreenPreview() {
     CryptoTrackerTheme {
-        CoinListScreen(state = CoinListState(coins = (1..10).map {
-            previewCoin.copy(id = it.toString())
-        }), modifier = Modifier.background(MaterialTheme.colorScheme.background))
+        CoinListScreen(
+            state = CoinListState(coins = (1..10).map { previewCoin.copy(id = it.toString()) }),
+            modifier = Modifier.background(MaterialTheme.colorScheme.background)
+        )
     }
 }
