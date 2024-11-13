@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.plcoding.cryptotracker.core.domain.util.onError
 import com.plcoding.cryptotracker.core.domain.util.onSuccess
 import com.plcoding.cryptotracker.crypto.domain.CoinDataSource
+import com.plcoding.cryptotracker.crypto.presentation.models.CoinUi
 import com.plcoding.cryptotracker.crypto.presentation.models.toCoinUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.ZonedDateTime
 
 /**
  * Created by felipebertanha on 12/November/2024
@@ -34,16 +36,32 @@ class CoinListViewModel(
     fun onAction(action: CoinListAction) {
         when (action) {
             is CoinListAction.OnCoinClick -> {
-                _state.update { it.copy(selectedCoin = action.coinUi) }
+                selectCoin(action.coinUi)
             }
         }
     }
 
-    private suspend fun loadCoins() {
+    private fun selectCoin(coinUi: CoinUi) {
+        _state.update { it.copy(selectedCoin = coinUi) }
+
+        viewModelScope.launch {
+            coinDataSource.getCoinHistory(
+                coinId = coinUi.id,
+                start = ZonedDateTime.now().minusDays(defaultHistoryPeriodInDays),
+                end = ZonedDateTime.now()
+            ).onSuccess { coinHistory ->
+                println(coinHistory)
+            }.onError { error ->
+                _events.send(CoinListEvent.Error(error))
+            }
+        }
+    }
+
+    private fun loadCoins() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            val coins = coinDataSource.getCoins().onSuccess { coins ->
+            coinDataSource.getCoins().onSuccess { coins ->
                 val coinsUi = coins.map { it.toCoinUi() }
                 _state.update {
                     it.copy(isLoading = false, coins = coinsUi)
@@ -53,5 +71,9 @@ class CoinListViewModel(
                 _events.send(CoinListEvent.Error(error))
             }
         }
+    }
+
+    companion object {
+        private const val defaultHistoryPeriodInDays = 5L
     }
 }
