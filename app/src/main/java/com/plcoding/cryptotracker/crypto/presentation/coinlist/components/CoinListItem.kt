@@ -49,7 +49,7 @@ fun CoinListItem(
     ) {
         Icon(
             imageVector = ImageVector.vectorResource(id = coinUi.iconRes),
-            contentDescription = coinUi.name,
+            contentDescription = "${coinUi.name} icon",
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(85.dp)
         )
