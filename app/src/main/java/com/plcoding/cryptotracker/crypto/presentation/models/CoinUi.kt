@@ -4,6 +4,7 @@ import android.icu.text.NumberFormat
 import androidx.annotation.DrawableRes
 import com.plcoding.cryptotracker.core.presentation.util.getDrawableIdForCoin
 import com.plcoding.cryptotracker.crypto.domain.models.Coin
+import com.plcoding.cryptotracker.crypto.presentation.coindetail.chart.DataPoint
 import java.util.Locale
 
 
@@ -18,7 +19,8 @@ data class CoinUi(
     val marketCapUsd: DisplayableNumber,
     val priceUsd: DisplayableNumber,
     val changePercent24Hr: DisplayableNumber,
-    @DrawableRes val iconRes: Int
+    @DrawableRes val iconRes: Int,
+    val history: List<DataPoint> = emptyList()
 ) {
     val absoluteChangeAmountUsd
         get() = priceUsd.value.times(changePercent24Hr.value.div(100)).toDisplayableCurrency()

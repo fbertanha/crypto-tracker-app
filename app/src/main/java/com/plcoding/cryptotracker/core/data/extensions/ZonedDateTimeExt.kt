@@ -8,6 +8,6 @@ fun ZonedDateTime.toMillis(zoneId: ZoneId = ZoneId.of("UTC")): Long {
     return this.withZoneSameLocal(zoneId).toInstant().toEpochMilli()
 }
 
-fun Long.toZonedDateTime(zoneId: ZoneId = ZoneId.of("UTC")): ZonedDateTime {
+fun Long.toZonedDateTime(zoneId: ZoneId = ZoneId.systemDefault()): ZonedDateTime {
     return Instant.ofEpochMilli(this).atZone(zoneId)
 }
